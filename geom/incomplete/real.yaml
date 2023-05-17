@@ -2,7 +2,7 @@
 beijingAngleNum: 1080
 beijingPlanes: 21
 beijingSubDetectorSize:
-  - 80
+  - 78
   - 144
 beijingVolumeSize:
   - 256

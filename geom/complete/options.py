@@ -1,6 +1,6 @@
 import yaml
 import os
-f = os.path.join(os.path.split(__file__)[0], r"./real.yaml")
+f = os.path.join(os.path.split(__file__)[0], r"real.yaml")
 y = yaml.load(open(f), yaml.FullLoader)
 
 beijingAngleNum = y["beijingAngleNum"]
