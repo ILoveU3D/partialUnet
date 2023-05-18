@@ -56,6 +56,15 @@ class BeijingGeometryWithFBP(torch.nn.Module):
         residual = residual.view(1, 1, beijingAngleNum*beijingPlanes, beijingSubDetectorSize[1], beijingSubDetectorSize[0])
         return x - self.lamb * BackProjection.apply(residual)
 
+    def filterBackprojection(self, p):
+        residual = p
+        residual = residual.view(1, 1, beijingAngleNum, beijingSubDetectorSize[1], beijingSubDetectorSize[0]*beijingPlanes)
+        residual = residual * self.cosWeight
+        residual = residual.view(1, 1, beijingAngleNum * beijingSubDetectorSize[1], beijingSubDetectorSize[0]*beijingPlanes)
+        residual = torch.nn.functional.conv2d(residual, self.ramp, stride=1, padding=(0, int(beijingSubDetectorSize[0]*beijingPlanes/2)))
+        residual = residual.view(1, 1, beijingAngleNum*beijingPlanes, beijingSubDetectorSize[1], beijingSubDetectorSize[0])
+        return BackProjection.apply(residual)
+
     def __cosWeight__(self):
         cosine = np.zeros([1,1,beijingAngleNum,beijingSubDetectorSize[1],beijingSubDetectorSize[0]*beijingPlanes], dtype=np.float32)
         mid = np.array([beijingSubDetectorSize[1],beijingSubDetectorSize[0]*beijingPlanes]) / 2

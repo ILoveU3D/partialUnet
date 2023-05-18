@@ -4,9 +4,7 @@ from torch.utils.data import Dataset
 
 class SingleSinoSet(Dataset):
     def __init__(self, sino, sino2, label, scale=(1,1,1080,144,82*21)):
-        sino = self._padd(sino)
         self.sino = torch.reshape(sino, scale)
-        sino2 = self._padd(sino2)
         self.sino2 = torch.reshape(sino2, scale)
         self.label = torch.reshape(label, scale)
 
@@ -29,4 +27,4 @@ class SingleSinoSet(Dataset):
     def reset(self, sino):
         batchsize = sino.shape[0]
         w,h = sino.shape[3]//21, sino.shape[2]
-        return torch.reshape(sino, (1,1,batchsize*21,h,w))
+        return torch.reshape(sino, (batchsize*21,h,w))

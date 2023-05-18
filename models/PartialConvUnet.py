@@ -37,5 +37,10 @@ class PartialConvUnet(nn.Module):
         x = self.up3(x, x2)
         x = self.up4(x, x1)
         logits = self.outc(x)
-        x = x_input + self.mask * logits
+        x = x_input - self.mask * logits
         return x
+
+    def init(self):
+        for m in self.modules():
+            if isinstance(m, PartialConv2d):
+                torch.nn.init.xavier_normal_(m.weight, gain=100)
