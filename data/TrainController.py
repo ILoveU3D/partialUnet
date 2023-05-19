@@ -42,11 +42,13 @@ class TrainController():
                         self.optimizer.step()
                         sino[...,idx*21:(idx+self.minisize)*21,:,:] = miniSet.reset(sinoOut.detach())
                         lossSingle += loss.item() / len(miniLoader)
-                        if idx==0 and (id)%self.checkstep == 0:
-                            sinoOut.reshape([self.minisize,144,1722])[int(self.minisize/2),...].detach().cpu().numpy().tofile("{}/out.raw".format(self.template))
-                            labelCurr.reshape([self.minisize,144,1722])[int(self.minisize/2),...].detach().cpu().numpy().tofile("{}/label.raw".format(self.template))
-                    latent = self.fdk(torch.zeros(self.imgScale).to(sino.device), sino)
-                    latent = geom.CompleteForwardProjection.apply(latent)
+                        if idx==0 and cascade==0 and (id)%self.checkstep == 0:
+                            sinoOut.detach().cpu().reshape([self.minisize,144,1722])[int(self.minisize/2),...].numpy().tofile("{}/out.raw".format(self.template))
+                            labelCurr.detach().cpu().reshape([self.minisize,144,1722])[int(self.minisize/2),...].numpy().tofile("{}/label.raw".format(self.template))
+                            latentCurr.detach().cpu().reshape([self.minisize,144,1722])[int(self.minisize/2),...].numpy().tofile("{}/latent.raw".format(self.template))
+                            sinoCurr.detach().cpu().reshape([self.minisize,144,1722])[int(self.minisize/2),...].numpy().tofile("{}/sino.raw".format(self.template))
+                    # latent = self.fdk(torch.zeros(self.imgScale).to(sino.device), sino)
+                    # latent = geom.CompleteForwardProjection.apply(latent)
                     loader.set_postfix(Cascade=cascade, CurrLoss=lossSingle, MeanLoss=lossSum / len(self.dataloader)*self.cascade)
                     lossSum += lossSingle
                 del sino, latent, label

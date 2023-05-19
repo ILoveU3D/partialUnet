@@ -21,11 +21,12 @@ class AAPMSet256(Dataset):
         sinoc01 = geom.CompleteForwardProjection.apply(img)
         sinoc01 = sinoc01.squeeze(0)
         sinoic02 = geom.IncompleteForwardProjection.apply(img)
-        # sinoic01 = geom.CompleteBackwardProjection.apply(sinoic02)
+        # sinoic01 = geom.IncompleteBackwardProjection.apply(sinoic02)
         sinoic01 = self.fdk.filterBackprojection(sinoic02)
         sinoic01 = geom.CompleteForwardProjection.apply(sinoic01)
-        sinoic02 = F.pad(sinoic02, (2, 2), value=0)
-        sinoic02 = sinoic02.squeeze(0)
+        sinoic02 = sinoic02.squeeze(0).squeeze(0).squeeze(0)
+        sinoic02 = F.pad(sinoic02, (2, 2), mode='replicate')
+        sinoic02 = sinoic02.unsqueeze(0).unsqueeze(0)
         sinoic01 = sinoic01.squeeze(0)
         return sinoc01, sinoic02, sinoic01
 
